@@ -1,4 +1,4 @@
-# S3 临时文件清理工具
+# S4 Cleaner - 清理缤纷云 S4 未完成的分段上传
 
 <div align="center">
 
@@ -8,16 +8,26 @@
 
 </div>
 
-> 一个高效的命令行工具，用于清理 S3 存储桶中过期的临时文件。
+> 一个高效的命令行工具，用于清理缤纷云 S4 存储桶中长时间未合并的分段上传文件，释放存储空间并降低成本。
+
+## 🌐 关于缤纷云 S4
+
+[缤纷云 S4](https://docs.bitiful.com/bitiful-s4/intro) 是一款高性能对象存储服务，具有以下重要特性：
+
+- **低成本**：相比亚马逊 S3 和阿里云 OSS，使用成本最多可降低 80%
+- **高性能**：基于 [Directory Buckets](https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/directory-buckets-overview.html) 技术，提供高元数据性能
+- **网络优化**：原生支持 Rename、HTTP/2、HTTP/3、TLS1.3
+- **兼容 S3**：绝大多数场景可以像使用 S3 一样使用缤纷云 S4
+- **简化存储层级**：无需在标准、低频、归档等存储类型中选择，降低选型难度和隐性费用
 
 ## ✨ 功能特点
 
-- **灵活的存储桶选择** - 支持清理单个或所有 S3 存储桶中的临时文件
-- **自定义过期时间** - 可设置不同的时间范围（支持天和小时单位）
-- **安全的操作模式** - 提供列出和删除两种操作模式，默认仅列出
-- **多样化输出格式** - 支持表格、JSON、CSV 等多种输出格式
-- **友好的用户体验** - 彩色终端输出，提升可读性
-- **健壮的错误处理** - 优雅处理长文件名和各种错误情况
+- **灵活的存储桶选择** - 支持清理缤纷云 S4 中单个或所有存储桶中的未完成分段上传
+- **自定义过期时间** - 可设置不同的时间范围（支持天和小时单位）来识别长期未完成的分段上传
+- **安全的操作模式** - 提供列出和删除两种操作模式，默认仅列出，避免意外删除
+- **多样化输出格式** - 支持表格、JSON、CSV 等多种输出格式，方便集成到自动化流程
+- **友好的用户体验** - 彩色终端输出，提升可读性和操作体验
+- **健壮的错误处理** - 优雅处理各种错误情况，确保操作安全可靠
 
 ## 📦 安装
 
@@ -53,13 +63,13 @@ GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o build/s4-cleaner-macos-app
 ### 基本用法
 
 ```bash
-# 列出所有桶中7天前的临时文件（默认）
+# 列出所有桶中7天前的未完成分段上传（默认）
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner
 
-# 列出指定桶中3天前的临时文件
+# 列出指定桶中3天前的未完成分段上传
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --bucket=my-bucket --olderThan=3d
 
-# 删除指定桶中72小时前的临时文件
+# 删除指定桶中72小时前的未完成分段上传
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --bucket=my-bucket --olderThan=72h --doDelete
 
 # 以JSON格式输出
@@ -71,7 +81,7 @@ AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --fmt=json
 | 参数 | 说明 | 默认值 |
 |:------:|:------|:--------:|
 | `--bucket` | 存储桶名称，为空表示所有桶 | `""` (所有桶) |
-| `--olderThan` | 查找早于此时间的文件，如 '7d'（7天前）或 '72h'（72小时前） | `"7d"` |
+| `--olderThan` | 查找早于此时间的分段上传，如 '7d'（7天前）或 '72h'（72小时前） | `"7d"` |
 | `--doDelete` | 是否执行删除操作，默认为false（仅列出） | `false` |
 | `--fmt` | 输出格式：table, json, csv | `"table"` |
 | `--version`, `-v` | 显示版本信息 | - |
