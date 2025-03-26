@@ -68,5 +68,7 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
+          tag_name: ${{ github.ref_name }}  # 这里必须是 `github.ref_name`
+          name: Release ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GB_TOKEN }}
