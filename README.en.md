@@ -20,7 +20,7 @@
 - **S3 Compatible**: Can be used like Amazon S3 in most scenarios
 - **Simplified Storage Tiers**: No need to choose between standard, infrequent access, or archive storage types, reducing complexity and hidden costs
 
-## ✨ Features
+## ✨ S4 Cleaner Features
 
 - **Flexible Bucket Selection** - Support for cleaning unfinished multipart uploads in a single or all Bitiful S4 buckets
 - **Customizable Expiration Time** - Set different time ranges (supports days and hours units) to identify long-standing uploads
