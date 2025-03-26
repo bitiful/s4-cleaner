@@ -1,4 +1,4 @@
-# S3 Temporary File Cleaner
+# S4 Cleaner - Clean Unfinished Bitiful S4 Multipart Uploads
 
 <div align="center">
 
@@ -8,18 +8,28 @@
 
 </div>
 
-> An efficient command-line tool for cleaning up expired temporary files in S3 buckets.
+> An efficient command-line tool for cleaning up long-standing unfinished multipart uploads in S3 buckets, freeing up storage space and reducing costs.
 
-## Features
+## 🌐 About Bitiful S4
 
-- **Flexible Bucket Selection** - Support for cleaning temporary files in a single or all S3 buckets
-- **Customizable Expiration Time** - Set different time ranges (supports days and hours units)
-- **Safe Operation Modes** - Two operation modes: list and delete, default is list only
-- **Multiple Output Formats** - Support for table, JSON, CSV and other output formats
-- **User-Friendly Experience** - Colorful terminal output for better readability
-- **Robust Error Handling** - Elegant handling of long filenames and various error situations
+[Bitiful S4](https://docs.bitiful.com/bitiful-s4/intro) is a high-performance object storage service with the following key features:
 
-## Installation
+- **Cost-Effective**: Up to 80% cost reduction compared to Amazon S3 and Alibaba OSS
+- **High Performance**: Built on [Directory Buckets](https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/directory-buckets-overview.html) technology for superior metadata performance
+- **Network Optimized**: Native support for Rename, HTTP/2, HTTP/3, TLS1.3
+- **S3 Compatible**: Can be used like Amazon S3 in most scenarios
+- **Simplified Storage Tiers**: No need to choose between standard, infrequent access, or archive storage types, reducing complexity and hidden costs
+
+## ✨ Features
+
+- **Flexible Bucket Selection** - Support for cleaning unfinished multipart uploads in a single or all Bitiful S4 buckets
+- **Customizable Expiration Time** - Set different time ranges (supports days and hours units) to identify long-standing uploads
+- **Safe Operation Modes** - Two operation modes: list and delete, default is list only to prevent accidental deletion
+- **Multiple Output Formats** - Support for table, JSON, CSV and other output formats for easy integration with automation workflows
+- **User-Friendly Experience** - Colorful terminal output for better readability and operation experience
+- **Robust Error Handling** - Elegant handling of various error situations, ensuring safe and reliable operations
+
+## 📦 Installation
 
 ### From Source Code
 
@@ -48,18 +58,18 @@ GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o build/s4-cleaner-macos-app
 
 Download pre-compiled binaries for your system from the [Releases](https://github.com/bitiful/s4-cleaner/releases) page.
 
-## Usage
+## 🚀 Usage
 
 ### Basic Usage
 
 ```bash
-# List temporary files older than 7 days in all buckets (default)
+# List unfinished multipart uploads older than 7 days in all buckets (default)
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner
 
-# List temporary files older than 3 days in the specified bucket
+# List unfinished multipart uploads older than 3 days in the specified bucket
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --bucket=my-bucket --olderThan=3d
 
-# Delete temporary files older than 72 hours in the specified bucket
+# Delete unfinished multipart uploads older than 72 hours in the specified bucket
 AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --bucket=my-bucket --olderThan=72h --doDelete
 
 # Output in JSON format
@@ -71,7 +81,7 @@ AWS_ACCESS_KEY_ID=your_ak AWS_SECRET_ACCESS_KEY=your_sk s4-cleaner --fmt=json
 | Parameter | Description | Default Value |
 |:-----------|:-------------|:---------------|
 | `--bucket` | Bucket name, empty means all buckets | `""` (all buckets) |
-| `--olderThan` | Find files older than this time, e.g. '7d' (7 days ago) or '72h' (72 hours ago) | `"7d"` |
+| `--olderThan` | Find multipart uploads older than this time, e.g. '7d' (7 days ago) or '72h' (72 hours ago) | `"7d"` |
 | `--doDelete` | Whether to perform deletion, default is false (list only) | `false` |
 | `--fmt` | Output format: table, json, csv | `"table"` |
 | `--version`, `-v` | Show version information | - |
@@ -83,7 +93,7 @@ The tool uses the following environment variables for AWS authentication:
 - `AWS_ACCESS_KEY_ID`: AWS access key ID (required)
 - `AWS_SECRET_ACCESS_KEY`: AWS secret access key (required)
 
-## Output Examples
+## 📊 Output Examples
 
 ### Table Output (Default)
 
@@ -160,10 +170,10 @@ my-bucket,temp/file1.txt,1258291,"1.2 MB",2023-01-01T12:00:00Z,true,null
 my-bucket,temp/file2.txt,3564812,"3.4 MB",2023-01-05T12:00:00Z,false,null
 ```
 
-## License
+## 📄 License
 
 Apache License 2.0
 
-## Other Languages
+## 🌐 Other Languages
 
 - [简体中文](README.md)
