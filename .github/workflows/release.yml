@@ -1,0 +1,68 @@
+name: 构建发布
+
+on:
+  push:
+    tags:
+      - 'v*' # 当推送带有 v 前缀的标签时触发，例如 v1.0.0
+
+jobs:
+  build:
+    name: 构建和发布
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        
+      - name: 设置 Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24' # 使用你需要的 Go 版本
+          
+      - name: 获取依赖
+        run: go mod download
+        
+      - name: 构建多平台二进制文件
+        run: |
+          # 创建构建目录
+          mkdir -p build
+          
+          # Linux (AMD64 和 ARM64)
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o build/s4-cleaner-linux-amd64 .
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o build/s4-cleaner-linux-arm64 .
+          
+          # Windows (AMD64 和 ARM64)
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o build/s4-cleaner-windows-amd64.exe .
+          GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o build/s4-cleaner-windows-arm64.exe .
+          
+          # macOS (AMD64/Intel 和 ARM64/M芯片)
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o build/s4-cleaner-macos-intel .
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o build/s4-cleaner-macos-apple-silicon .
+          
+          # 为每个文件创建 SHA256 校验和
+          cd build
+          sha256sum s4-cleaner-linux-amd64 s4-cleaner-linux-arm64 s4-cleaner-windows-amd64.exe s4-cleaner-windows-arm64.exe s4-cleaner-macos-intel s4-cleaner-macos-apple-silicon > SHA256SUMS.txt
+          cd ..
+          
+          # 压缩二进制文件
+          cd build
+          for file in s4-cleaner-*; do
+            if [[ "$file" != "SHA256SUMS.txt" ]]; then
+              zip "${file}.zip" "$file"
+              rm "$file"
+            fi
+          done
+          cd ..
+      
+      - name: 创建 Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/*.zip
+            build/SHA256SUMS.txt
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
